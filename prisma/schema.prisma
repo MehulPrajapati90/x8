@@ -8,13 +8,30 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String @id @default(uuid())
+  clerkId   String @unique
   firstName String
   lastName  String
-  email     String   @unique
+  email     String @unique
   imageUrl  String
+
+  links Links[]
+
   createAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([email])
+}
+
+model Links {
+  id         String  @id @default(uuid())
+  shortLink  String  @unique
+  longLink   String
+  custom     Boolean @default(false)
+  clickCount Int     @default(0)
+  userId     String
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
