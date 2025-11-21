@@ -91,3 +91,41 @@ export const checkCustom = async ({ custom }: checkCustomProps) => {
         }
     }
 }
+
+export const getAllUrlCreatedByUser = async () => {
+    const { user } = await getDBUser();
+
+    if (!user) {
+        return {
+            success: false,
+            message: "User not authenticated"
+        }
+    };
+
+    try {
+        const data = await client.links.findMany({
+            where: {
+                userId: user?.id
+            },
+            select: {
+                longLink: true,
+                shortLink: true,
+                custom: true,
+                createAt: true,
+                clickCount: true
+            }
+        });
+
+        return {
+            success: true,
+            urls: data,
+            message: "Url's fetched successfully"
+        };
+    } catch (e) {
+        console.log(e);
+        return {
+            success: false,
+            error: "failed to check Custom's"
+        }
+    }
+}
