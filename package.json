@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.35.1",
+    "@clerk/themes": "^2.4.39",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/adapter-pg": "^7.0.0",
     "@prisma/client": "7.0.0",
@@ -48,6 +49,7 @@
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.554.0",
+    "mx-icons": "^1.0.8",
     "nanoid": "^5.1.6",
     "next": "16.0.3",
     "next-themes": "^0.4.6",

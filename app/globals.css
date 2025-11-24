@@ -112,10 +112,21 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+html,
+body {
+  background-color: #101114;
+  color: white;
+}
+
+.auth-gradient {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 80, 120, 0.25), transparent 70%), #000000
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
