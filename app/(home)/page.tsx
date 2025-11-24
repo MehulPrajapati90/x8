@@ -1,10 +1,14 @@
+"use client";
+
 import TextTemplate from "@/components/home/text-template";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { MousePointer2Off } from "lucide-react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const page = () => {
+  const router = useRouter();
   return (
     <section className='flex flex-col items-center w-full min-h-full mt-30'>
       <TextTemplate />
@@ -27,7 +31,7 @@ const page = () => {
         <Button size={"sm"} className='bg-[#ff0066]/60 hover:bg-[#ff0066] transition-all duration-200 ease-in-out rounded-[6px] font-sans font-medium'>
           Document
         </Button>
-        <Button size={"sm"} className='bg-white text-black hover:bg-[#f3f3f3] rounded-[6px] transition-all duration-200 ease-in-out font-sans font-medium border border-[#e6e6e6]'>
+        <Button onClick={() => router.push('/dashboard')} size={"sm"} className='bg-white text-black hover:bg-[#f3f3f3] rounded-[6px] transition-all duration-200 ease-in-out font-sans font-medium border border-[#e6e6e6]'>
           Get Started
         </Button>
       </div>
