@@ -122,6 +122,16 @@ body {
   background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 80, 120, 0.25), transparent 70%), #000000
 }
 
+.hidden-scrollbar {
+  overflow: auto;           /* or scroll */
+  scrollbar-width: none;    /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none;            /* Chrome, Safari, Opera */
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

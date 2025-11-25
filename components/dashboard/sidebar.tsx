@@ -2,23 +2,16 @@
 
 import { cn } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
-import { Home, Database, Settings, PanelRight, Link as LucideLink } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
-
-const items = [
-  { name: "Dashboard", icon: Home, href: "/dashboard" },
-  { name: "Tables", icon: Database, href: "/tables" },
-  { name: "Settings", icon: Settings, href: "/settings" },
-];
+import { LucideLink, PanelRight } from "lucide-react";
+import { Navigationitems } from "@/utils";
 
 export function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState<boolean>(true);
-
-  console.log(pathname)
   return (
     <>
       {open ? (
@@ -39,7 +32,7 @@ export function Sidebar() {
           <Separator className="bg-neutral-700/70" />
 
           <nav className="flex flex-col gap-1 px-2 py-5">
-            {items.map((item) => (
+            {Navigationitems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
@@ -70,7 +63,7 @@ export function Sidebar() {
           <Separator className="bg-neutral-700/70" />
 
           <nav className="flex flex-col gap-1 px-2 py-5">
-            {items.map((item) => (
+            {Navigationitems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
@@ -88,4 +81,4 @@ export function Sidebar() {
       )}
     </>
   );
-}
+};

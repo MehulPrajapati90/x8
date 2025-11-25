@@ -20,6 +20,7 @@ export const createShortLink = async ({ longLink }: CreateShortLink) => {
 
         return {
             success: true,
+            shorturl: createUrl.shortLink,
             message: "Short-Link created successfully",
         }
     } catch (e) {
@@ -29,7 +30,7 @@ export const createShortLink = async ({ longLink }: CreateShortLink) => {
             error: "failed to created Short-Link"
         }
     }
-}
+};
 
 // Custom
 export const createShortLinkWithCustom = async ({ longLink, custom }: createShortLinkWithCustom) => {
@@ -45,6 +46,7 @@ export const createShortLinkWithCustom = async ({ longLink, custom }: createShor
 
         return {
             success: true,
+            shorturl: createUrl.shortLink,
             message: "Short-Link created successfully",
         }
     } catch (e) {
@@ -113,12 +115,19 @@ export const getAllUrlCreatedByUser = async () => {
                 custom: true,
                 createAt: true,
                 clickCount: true
+            },
+            orderBy: {
+                createAt: "desc"
             }
         });
+
+        const totalLinkCount = data.length;
+        let totalClickCount = data.reduce((acc, obj) => (acc + obj.clickCount), 0);
 
         return {
             success: true,
             urls: data,
+            analytics: { totalClickCount, totalLinkCount },
             message: "Url's fetched successfully"
         };
     } catch (e) {
@@ -126,6 +135,44 @@ export const getAllUrlCreatedByUser = async () => {
         return {
             success: false,
             error: "failed to check Custom's"
+        }
+    }
+};
+
+export const getLinkAnalytics = async () => {
+    const { user } = await getDBUser();
+
+    if (!user) {
+        return {
+            success: false,
+            message: "User not authenticated"
+        }
+    };
+
+    try {
+        const analytics = await client.links.findMany({
+            where: {
+                userId: user?.id
+            },
+            select: {
+                id: true,
+                clickCount: true,
+            }
+        });
+
+        const totalLinkCloud = analytics.length;
+        let totalClickCount = analytics.reduce((acc, obj) => (acc + obj.clickCount), 0);
+
+        return {
+            success: true,
+            analytics: { totalClickCount, totalLinkCloud },
+            message: "Analytics fetched successfully",
+        }
+    } catch (e) {
+        console.log(e);
+        return {
+            success: false,
+            error: "failed to fetch Analytics"
         }
     }
 }

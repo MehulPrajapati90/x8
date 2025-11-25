@@ -3,47 +3,46 @@ import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
 interface ParamsInterface {
-    params: Promise<{ id: string }>
+    params: Promise<{ id: string }>;
 }
 
 export async function GET(req: NextRequest, { params }: ParamsInterface) {
-    const { id } = await params;
     try {
-        const getMetaData = await client.links.findFirst({
-            where: {
-                shortLink: id
-            }
-        })
+        const { id } = await params;
 
-        if (!getMetaData) {
+        const link = await client.links.findUnique({
+            where: { shortLink: id },
+        });
+
+        if (!link) {
             return NextResponse.json({
                 success: false,
-                error: "Invalid Link or Link is Broken"
-            })
+                error: "Invalid Link or Link is Broken",
+            });
         }
 
-        const updateCountOfUrl = await client.links.update({
-            where: {
-                shortLink: id
-            },
-            data: {
-                clickCount: { increment: 1}
-            }
-        })
+        await client.links.update({
+            where: { shortLink: id },
+            data: { clickCount: { increment: 1 } },
+        });
 
-        const longLink = getMetaData?.longLink;
+        const long = link?.longLink;
 
-        if (longLink.startsWith("http://") || longLink.startsWith("https://")) {
-            return redirect(longLink);
+        if (long.startsWith("http://") || long.startsWith("https://")) {
+            return redirect(long);
         }
 
-        return redirect(`/${longLink}`);
+        return redirect(`/${long}`);
+    } catch (e: any) {
+        // Let Next.js handle redirect's internal error
+        if (e?.digest?.startsWith("NEXT_REDIRECT")) {
+            throw e;
+        }
 
-    } catch (e) {
-        console.error("Error redirecting User!", e);
-        NextResponse.json({
+        console.error("Unexpected redirect error:", e);
+        return NextResponse.json({
             success: false,
-            error: "Failed to redirect user!"
-        })
+            error: "Something went wrong while redirecting",
+        });
     }
 }

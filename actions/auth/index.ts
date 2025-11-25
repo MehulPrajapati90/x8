@@ -62,12 +62,20 @@ export const getDBUser = async () => {
         const dbUser = await client.user.findUnique({
             where: {
                 clerkId: user?.id
+            },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                imageUrl: true,
+                email: true,
+                createAt: true,
             }
         });
 
         return {
             success: true,
-            user: user,
+            user: dbUser,
             message: "user fetched successfully"
         }
     } catch (e) {
