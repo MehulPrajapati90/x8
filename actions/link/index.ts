@@ -4,6 +4,7 @@ import { client } from "@/lib/db";
 import { getDBUser } from "../auth";
 import { nanoid } from "nanoid"
 import { currentUser } from "@clerk/nextjs/server";
+import { CloudHail } from "lucide-react";
 
 // Non-Custom
 export const createShortLink = async ({ longLink }: CreateShortLink) => {
@@ -36,6 +37,18 @@ export const createShortLink = async ({ longLink }: CreateShortLink) => {
 export const createShortLinkWithCustom = async ({ longLink, custom }: createShortLinkWithCustom) => {
     try {
         const { user } = await getDBUser();
+
+        // Check if custom is availaible...
+        const isAvailaible = await checkCustom({ custom });
+
+        if (!isAvailaible.success) {
+            return {
+                success: isAvailaible.success,
+                message: isAvailaible.message,
+                availaible: false
+            };
+        }
+
         const createUrl = await client.links.create({
             data: {
                 longLink: longLink,
@@ -46,6 +59,7 @@ export const createShortLinkWithCustom = async ({ longLink, custom }: createShor
 
         return {
             success: true,
+            availaible: true,
             shorturl: createUrl.shortLink,
             message: "Short-Link created successfully",
         }
@@ -173,6 +187,35 @@ export const getLinkAnalytics = async () => {
         return {
             success: false,
             error: "failed to fetch Analytics"
+        }
+    }
+}
+
+export const deleteShortLink = async (shortlink: string) => {
+    const { user } = await getDBUser();
+
+    if (!user) {
+        return {
+            success: false,
+            message: "User not authenticated"
+        };
+    };
+    try {
+        const deleteOps = await client.links.delete({
+            where: {
+                shortLink: shortlink
+            }
+        });
+
+        return {
+            success: true,
+            message: "Short-Link deleted successfully"
+        };
+    } catch (e) {
+        console.log(e);
+        return {
+            success: false,
+            error: "failed to delete Short-Link"
         }
     }
 }

@@ -1,4 +1,4 @@
-import { checkCustom, createShortLink, createShortLinkWithCustom, getAllUrlCreatedByUser, getLinkAnalytics } from "@/actions/link";
+import { checkCustom, createShortLink, createShortLinkWithCustom, deleteShortLink, getAllUrlCreatedByUser, getLinkAnalytics } from "@/actions/link";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useGetAllUrlCreatedByUser = () => {
@@ -42,5 +42,15 @@ export const useGetAnalytics = () => {
     return useQuery({
         queryKey: ['url'],
         queryFn: async () => await getLinkAnalytics()
+    })
+}
+
+export const useDeleteShortLink = () => {
+    const quertClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (shortlink: string) => await deleteShortLink(shortlink),
+        onSuccess: () => {
+            quertClient.invalidateQueries({ queryKey: ['url'] })
+        }
     })
 }

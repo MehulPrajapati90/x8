@@ -3,6 +3,7 @@
 import AnalyticsBox from '@/components/dashboard/analytics-box';
 import CreateUrl from '@/components/dashboard/create-url';
 import RightDataBar from '@/components/dashboard/right-data-bar';
+import WorkingBox from '@/components/dashboard/working-box';
 import { useGetAllUrlCreatedByUser } from '@/hooks/ts-query/links';
 
 const DashboardPage = () => {
@@ -17,7 +18,7 @@ const DashboardPage = () => {
         <div className="grid grid-cols-2 gap-4">
 
           <AnalyticsBox clickCount={data?.analytics?.totalClickCount || 0} linkCount={data?.analytics?.totalLinkCount || 0} />
-          <div className="bg-neutral-900 rounded-xl"></div>
+          <WorkingBox />
         </div>
 
       </div>

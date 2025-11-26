@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
-import { BatteryCharging, CheckCheck, Copy, Share } from "lucide-react";
+import { BatteryCharging, CheckCheck, Copy, Share, X } from "lucide-react";
 import { Separator } from "../ui/separator";
 import Hint from "../ui/hint";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ const CreateUrl = () => {
     const router = useRouter();
     const [link, setLink] = useState<string>("");
     const [custom, setCustom] = useState<string>("");
+    const [customAvailaible, setCustomAvailailble] = useState<boolean>(true);
     const [shortLink, setShortLink] = useState<string>("");
     const [copy, setCopy] = useState<boolean>(false);
 
@@ -32,19 +33,29 @@ const CreateUrl = () => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        let response;
 
         if (custom) {
-            response = await mutateAsynCustoms({ custom, longLink: link });
-        } else {
-            response = await mutateAsync({ longLink: link });
-        }
+            const response = await mutateAsynCustoms({ custom, longLink: link });
+            if (!response.availaible) {
+                setCustomAvailailble(response?.availaible!);
+                return toast.error("Custom already taken");
+            }
 
-        if (response?.success) {
-            setShortLink(response?.shorturl!)
-            toast.success(response.message);
+            if (response?.success) {
+                setShortLink(response?.shorturl!)
+                return toast.success(response.message);
+            } else {
+                return toast.error(response.error)
+            }
         } else {
-            toast.error(response.error)
+            const response = await mutateAsync({ longLink: link });
+
+            if (response?.success) {
+                setShortLink(response?.shorturl!)
+                return toast.success(response.message);
+            } else {
+                return toast.error(response.error)
+            }
         }
     }
 
@@ -88,7 +99,7 @@ const CreateUrl = () => {
                             </div>
                             <div className="flex items-center">
                                 {shortLink ? (
-                                    <p className="text-[15px] font-sans tracking-tight font-medium">{process.env.NEXT_PUBLIC_FRONTEND_URL}/{shortLink}</p>
+                                    <p className="text-[14px] font-sans tracking-[-0.3px] font-medium">{process.env.NEXT_PUBLIC_FRONTEND_URL}/{shortLink}</p>
                                 ) : (
                                     <i className="text-[15px] font-sans font-normal tracking-tight text-neutral-500">{'your generated link'}</i>
                                 )}
@@ -111,8 +122,28 @@ const CreateUrl = () => {
                             </Link>
                         </Hint>
                     </div>
-                    <Input type="url" value={link} onChange={(e) => setLink(e.target.value)} placeholder="add your link" className="w-[60%] font-sans tracking-[-0.2px] px-3 focus-visible:border-[#f3f3f322] focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none bg-transparent rounded-[30px] border border-[#f3f3f322]" />
-                    <Input type="text" value={custom} onChange={(e) => setCustom(e.target.value)} placeholder="add your customs" className="w-[60%] font-sans tracking-[-0.2px] px-3 focus-visible:border-[#f3f3f322] focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none bg-transparent rounded-[30px] border border-[#f3f3f322]" />
+                    <Input type="url" value={link} onChange={(e) => setLink(e.target.value)} placeholder="add your link" className="w-[60%] font-sans font-medium tracking-[-0.3px] px-3 focus-visible:border-[#f3f3f322] focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none bg-transparent rounded-[30px] border border-[#f3f3f322]" />
+
+                    <div className="relative">
+                        <Input type="text" value={custom} onChange={(e) => {
+                            setCustomAvailailble(true);
+                            setCustom(e.target.value)
+                        }} placeholder="add your customs" className="w-[60%] font-sans tracking-[-0.2px] px-3 focus-visible:border-[#f3f3f322] focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none bg-transparent rounded-[30px] border border-[#f3f3f322]" />
+
+                        {custom && customAvailaible ? (
+                            <div className="size-5 flex items-center justify-center bg-green-400/40 rounded-full absolute top-2 left-[56%]">
+                                <CheckCheck size={13} className="text-white" />
+                            </div>
+                        ) : (
+                            custom && !customAvailaible ? (
+                                <div className="size-5 flex items-center justify-center bg-red-400/40 rounded-full absolute top-2 left-[56%]">
+                                    <X size={13} className="text-white" />
+                                </div>
+                            ) : (
+                                <div></div>
+                            )
+                        )}
+                    </div>
                 </div>
 
                 <div className="flex gap-2 font-sans tracking-tight">
