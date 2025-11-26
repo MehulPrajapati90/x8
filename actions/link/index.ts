@@ -4,6 +4,7 @@ import { client } from "@/lib/db";
 import { getDBUser } from "../auth";
 import { nanoid } from "nanoid"
 import { currentUser } from "@clerk/nextjs/server";
+import { CloudHail } from "lucide-react";
 
 // Non-Custom
 export const createShortLink = async ({ longLink }: CreateShortLink) => {
@@ -20,6 +21,7 @@ export const createShortLink = async ({ longLink }: CreateShortLink) => {
 
         return {
             success: true,
+            shorturl: createUrl.shortLink,
             message: "Short-Link created successfully",
         }
     } catch (e) {
@@ -29,12 +31,24 @@ export const createShortLink = async ({ longLink }: CreateShortLink) => {
             error: "failed to created Short-Link"
         }
     }
-}
+};
 
 // Custom
 export const createShortLinkWithCustom = async ({ longLink, custom }: createShortLinkWithCustom) => {
     try {
         const { user } = await getDBUser();
+
+        // Check if custom is availaible...
+        const isAvailaible = await checkCustom({ custom });
+
+        if (!isAvailaible.success) {
+            return {
+                success: isAvailaible.success,
+                message: isAvailaible.message,
+                availaible: false
+            };
+        }
+
         const createUrl = await client.links.create({
             data: {
                 longLink: longLink,
@@ -45,6 +59,8 @@ export const createShortLinkWithCustom = async ({ longLink, custom }: createShor
 
         return {
             success: true,
+            availaible: true,
+            shorturl: createUrl.shortLink,
             message: "Short-Link created successfully",
         }
     } catch (e) {
@@ -113,12 +129,19 @@ export const getAllUrlCreatedByUser = async () => {
                 custom: true,
                 createAt: true,
                 clickCount: true
+            },
+            orderBy: {
+                createAt: "desc"
             }
         });
+
+        const totalLinkCount = data.length;
+        let totalClickCount = data.reduce((acc, obj) => (acc + obj.clickCount), 0);
 
         return {
             success: true,
             urls: data,
+            analytics: { totalClickCount, totalLinkCount },
             message: "Url's fetched successfully"
         };
     } catch (e) {
@@ -126,6 +149,73 @@ export const getAllUrlCreatedByUser = async () => {
         return {
             success: false,
             error: "failed to check Custom's"
+        }
+    }
+};
+
+export const getLinkAnalytics = async () => {
+    const { user } = await getDBUser();
+
+    if (!user) {
+        return {
+            success: false,
+            message: "User not authenticated"
+        }
+    };
+
+    try {
+        const analytics = await client.links.findMany({
+            where: {
+                userId: user?.id
+            },
+            select: {
+                id: true,
+                clickCount: true,
+            }
+        });
+
+        const totalLinkCloud = analytics.length;
+        let totalClickCount = analytics.reduce((acc, obj) => (acc + obj.clickCount), 0);
+
+        return {
+            success: true,
+            analytics: { totalClickCount, totalLinkCloud },
+            message: "Analytics fetched successfully",
+        }
+    } catch (e) {
+        console.log(e);
+        return {
+            success: false,
+            error: "failed to fetch Analytics"
+        }
+    }
+}
+
+export const deleteShortLink = async (shortlink: string) => {
+    const { user } = await getDBUser();
+
+    if (!user) {
+        return {
+            success: false,
+            message: "User not authenticated"
+        };
+    };
+    try {
+        const deleteOps = await client.links.delete({
+            where: {
+                shortLink: shortlink
+            }
+        });
+
+        return {
+            success: true,
+            message: "Short-Link deleted successfully"
+        };
+    } catch (e) {
+        console.log(e);
+        return {
+            success: false,
+            error: "failed to delete Short-Link"
         }
     }
 }
