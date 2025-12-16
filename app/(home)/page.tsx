@@ -1,14 +1,13 @@
-"use client";
-
 import TextTemplate from "@/components/home/text-template";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { MousePointer2Off } from "lucide-react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import HomeButtonComp from "@/components/home/home-buttons";
+import { onBoardUser } from "@/actions/auth";
 
-const page = () => {
-  const router = useRouter();
+const page = async () => {
+  const user = await onBoardUser();
+
   return (
     <section className='flex flex-col items-center w-full min-h-full mt-30'>
       <TextTemplate />
@@ -27,14 +26,7 @@ const page = () => {
       </div>
 
       {/* Button */}
-      <div className='text-white flex justify-center items-center gap-2 text-[15px] tracking-tight'>
-        <Button size={"sm"} className='bg-[#ff0066]/60 hover:bg-[#ff0066] transition-all duration-200 ease-in-out rounded-[6px] font-sans font-medium'>
-          Document
-        </Button>
-        <Button onClick={() => router.push('/dashboard')} size={"sm"} className='bg-white text-black hover:bg-[#f3f3f3] rounded-[6px] transition-all duration-200 ease-in-out font-sans font-medium border border-[#e6e6e6]'>
-          Get Started
-        </Button>
-      </div>
+      <HomeButtonComp />
 
       {/* Preview */}
       <div className="w-full flex flex-col items-center gap-5 justify-center py-15 text-[15px]">
@@ -58,8 +50,6 @@ const page = () => {
           <p className="py-1 text-[15px] font-mono font-semibold tracking-tight text-zinc-400">Redirect.</p>
         </div>
       </div>
-
-
     </section>
   )
 }
