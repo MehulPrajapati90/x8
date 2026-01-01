@@ -53,13 +53,13 @@ export const createShortLinkWithCustom = async ({ longLink, custom }: createShor
             data: {
                 longLink: longLink,
                 shortLink: custom,
-                userId: user?.id!
+                userId: user?.id!,
+                custom: true,
             }
         });
 
         return {
             success: true,
-            availaible: true,
             shorturl: createUrl.shortLink,
             message: "Short-Link created successfully",
         }
@@ -85,19 +85,23 @@ export const checkCustom = async ({ custom }: checkCustomProps) => {
         const check = await client.links.findFirst({
             where: {
                 shortLink: custom
+            },
+            select: {
+                shortLink: true
             }
         })
 
-        if (check) {
+        if (check?.shortLink) {
             return {
                 success: false,
-                message: "custom already exist"
+                error: "custom already exist"
             }
         }
 
         return {
             success: true,
-            message: "custom url is Available"
+            message: "custom url is Available",
+            shorturl: check?.shortLink
         }
     } catch (e) {
         console.log(e);
