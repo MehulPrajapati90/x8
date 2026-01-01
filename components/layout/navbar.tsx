@@ -20,7 +20,7 @@ const Navbar = () => {
                     <Link href='https://x.com/mehulHQ' target='_blank'>
                         <Twitter size={24} strokeWidth={1.5} className='transition-all duration-200 ease-in-out hover:text-[#ff0066]' />
                     </Link>
-                    <Link href='https://x.com/mehulHQ' target='_blank'>
+                    <Link href='https://github.com/MehulPrajapati90/x8' target='_blank'>
                         <Github size={24} strokeWidth={1.5} className='transition-all duration-200 ease-in-out hover:text-[#ff0066]' />
                     </Link>
                 </div>
