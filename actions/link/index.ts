@@ -4,7 +4,6 @@ import { client } from "@/lib/db";
 import { getDBUser } from "../auth";
 import { nanoid } from "nanoid"
 import { currentUser } from "@clerk/nextjs/server";
-import { CloudHail } from "lucide-react";
 
 // Non-Custom
 export const createShortLink = async ({ longLink }: CreateShortLink) => {

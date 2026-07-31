@@ -1,6 +1,8 @@
 import SidebarWrapper from "@/components/dashboard/sidebar-wrapper";
 import { AppBar } from "@/components/dashboard/app-bar";
 
+export const dynamic = 'force-dynamic';
+
 function DashboardLayout({
   children,
 }: {

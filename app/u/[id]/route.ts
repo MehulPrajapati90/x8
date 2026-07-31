@@ -2,9 +2,12 @@ import { client } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
+
 interface ParamsInterface {
     params: Promise<{ id: string }>;
 }
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest, { params }: ParamsInterface) {
     try {

@@ -3,11 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import { MousePointer2Off } from "lucide-react";
 import Link from "next/link";
 import HomeButtonComp from "@/components/home/home-buttons";
-import { onBoardUser } from "@/actions/auth";
 
 const page = async () => {
-  const user = await onBoardUser();
-
   return (
     <section className='flex flex-col items-center w-full min-h-full mt-30'>
       <TextTemplate />
@@ -17,8 +14,8 @@ const page = async () => {
           <span className='text-[33px] text-zinc-500 font-normal font-sans tracking-tighter'>Meet x8 — the way to power your links.</span>
         </h1>
 
-        <p className='flex flex-col justify-center items-center text-zinc-500 font-normal font-sans py-3 text-[14px]'>
-          <span className='tracking-[-0.3px] leading-4'>Shorten long URLs in just one click, track performance effortlessly, and keep your links clean</span>
+        <p className='flex flex-col justify-center items-center text-zinc-400/90 font-sans font-medium py-3 text-[14px]'>
+          <span className='tracking-[-0.3px] leading-4'>Shorten your long URLs in just one click & track performance effortlessly.</span>
           <span className='tracking-[-0.3px]'>
             Join thousands who trust x8 to share smarter every day.
           </span>
@@ -42,7 +39,7 @@ const page = async () => {
             <MousePointer2Off size={18} className="rotate-45 text-yellow-400" />
           </div>
           <div className="font-mono tracking-tight p-2 px-6 border rounded-[30px] border-zinc-500 bg-red-500/15 text-zinc-300 font-normal shadow-2xl shadow-red-900 hover:bg-red-500/25 transition-all ease-in duration-100 cursor-pointer">
-            <Link href={'http://x.com/mehulHQ'} className="hover:underline">http://x.com/mehulHQ</Link>
+            <Link href={'http://x.com/mehulHQ'} className="hover:underline">http://x.com/elonmusk</Link>
           </div>
         </div>
         <div className="w-[300px] pb-5 flex flex-col items-center justify-center py-6">
